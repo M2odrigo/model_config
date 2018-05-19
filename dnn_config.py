@@ -21,13 +21,33 @@ optimizer = config['strings']['optimizer']
 loss = config['strings']['loss']
 dropout = config['floats']['dropout']
 
-dataframe = pandas.read_csv(config['archives']['dataset'], header=None)
-dataset = dataframe.values
-X = dataset[:,0:int(cant_input)].astype(float)
-Y = dataset[:,int(cant_input)]
+mode = config['archives']['mode']
+
+X_test = Y_test = None
+
+if(mode=='train'):
+    dataframe = pandas.read_csv(config['archives']['dataset'], header=None)
+    dataset = dataframe.values
+    X = dataset[:,0:int(cant_input)].astype(float)
+    Y = dataset[:,int(cant_input)]
+else:
+    if(mode=='train-test'):
+        dataframe = pandas.read_csv(config['archives']['dataset_train'], header=None)
+        dataset = dataframe.values
+        X = dataset[:,0:int(cant_input)].astype(float)
+        Y = dataset[:,int(cant_input)]
+        dataframe = pandas.read_csv(config['archives']['dataset_test'], header=None)
+        dataset = dataframe.values
+        X_test = dataset[:,0:int(cant_input)].astype(float)
+        Y_test = dataset[:,int(cant_input)]
+        encoder = LabelEncoder()
+        encoder.fit(Y)
+        encoded_Y = encoder.transform(Y_test)
+        Y_test = encoded_Y
 
 encoder = LabelEncoder()
 encoder.fit(Y)
 encoded_Y = encoder.transform(Y)
+Y = encoded_Y
 
-construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(cant_epochs), int(batch_size), activations, optimizer, loss, dropout)
+construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(cant_epochs), int(batch_size), activations, optimizer, loss, dropout, X_test, Y_test)

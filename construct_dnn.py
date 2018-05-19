@@ -1,7 +1,7 @@
 from keras.models import Sequential
 from keras.layers import Dense
 
-def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, batch_size, activations, optimizer, loss, dropout):
+def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, batch_size, activations, optimizer, loss, dropout, X_test=None, Y_test=None):
     #recorrer las capas para ir configurando la red
     model = Sequential()
     for capa in cant_capas:
@@ -14,3 +14,12 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
 
     model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
     model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size)
+    print('###PREDICTION###')
+    if(X_test.any()):
+        # evaluate the model
+        scores = model.evaluate(X_test, Y_test)
+    else:
+        # evaluate the model
+        scores = model.evaluate(X, Y)
+    acc = ("%.2f%%" % (scores[1]*100))
+    print('Accuracy ' + str(acc))
