@@ -1,4 +1,5 @@
 import numpy as np
+import csv
 from keras.models import Sequential
 from keras.layers import Dense
 from save_activations import save_activation
@@ -26,6 +27,10 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         scores = model.evaluate(X, Y)
     acc = ("%.2f%%" % (scores[1]*100))
     print('Accuracy ' + str(acc))
+    fields=[str(cant_epochs),str(acc)]
+    with open('dnn_acc.csv', 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow(fields)
     for capa in cant_capas:
         if (capa==0):
             activaciones = get_activations(cant_neuronas[capa], cant_input, model.layers[capa].get_weights(), X, activations[capa])
