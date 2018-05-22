@@ -1,7 +1,16 @@
+import configparser
 import os
 import csv
 import pandas
 from split_function import split
+from perceptron_function import perceptron_train
+
+#Leemos las configuraciones para el perceptron
+config = configparser.ConfigParser()
+config.read('config.ini')
+epochs_perceptron = config['perceptron']['cant_epochs']
+eta = config['perceptron']['eta']
+
 def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
     if(layer != last_layer):
         print("epoch ", e, "cant nodos: ", cant_nodos, "activation shape: ", activations.shape)
@@ -32,10 +41,8 @@ def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
         split(open(filename, 'r'), 146);
         filename1 = 'output_1.csv'
         filename2 = 'output_2.csv'
-        input('contunye_?')
-        #perceptron_plot(filename1, layer, e,cant_nodos)
-        #perceptron_plot(filename2, layer, e,cant_nodos)
-        #input('continue?') 
+        perceptron_train(filename1, filename2, layer, int(cant_nodos), int(epochs_perceptron), int(eta))
+
     else:
         print("capa actual " + str(layer))
         print("capa final " + str(last_layer))
