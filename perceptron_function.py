@@ -16,6 +16,7 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     n = epochs
     errors = []
     mala_clasif = []
+    weights = []
 
     for t in range(n):
         total_error = 0
@@ -26,6 +27,7 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
             if (np.dot(X[i], w)*Y[i]) <= 0.0:
                 total_error += (np.dot(X[i], w)*Y[i])
                 w = w + eta*X[i]*Y[i]
+                weights.append(w)
                 cont_error = cont_error +1
         errors.append(total_error*-1)
         mala_clasif.append(cont_error)
@@ -33,7 +35,9 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     mala_clasif.sort()
     print(mala_clasif)
     #elegimos un valor luego de las primeras tres, para evitar enganos por la inicializacion en zeros
+    ###Respecto al peso (w), se le pasa el ultimo actualizado, si se necesitara pasar donde el error es minimo, utilizar el array de pesos (weights) y acceder mediante el indice
     mn = mala_clasif[3]
+    print(mn)
     error_minimo = mn/cont_total_input
     accuracy = 100 -(error_minimo*100)
     fields=[layer,str(cont_total_input),accuracy]
