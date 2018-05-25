@@ -5,6 +5,7 @@ import os
 import pandas
 from construct_dnn import construct_dnn
 from sklearn.preprocessing import LabelEncoder
+from keras import regularizers
 
 #Leemos las configuraciones, almacenamos en variables locales para construir la red
 config = configparser.ConfigParser()
@@ -19,7 +20,6 @@ cant_epochs = config['ints']['cant_epochs']
 activations = (config['strings']['activation']).split(',')
 optimizer = config['strings']['optimizer']
 loss = config['strings']['loss']
-dropout = config['floats']['dropout']
 
 mode = config['archives']['mode']
 
@@ -50,4 +50,4 @@ encoder.fit(Y)
 encoded_Y = encoder.transform(Y)
 Y = encoded_Y
 
-construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(cant_epochs), int(batch_size), activations, optimizer, loss, dropout, X_test, Y_test)
+construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(cant_epochs), int(batch_size), activations, optimizer, loss, X_test, Y_test)
