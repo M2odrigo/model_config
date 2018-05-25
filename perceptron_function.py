@@ -1,6 +1,10 @@
 import numpy as np
 import csv
-
+import os
+if os.path.isfile('data/train_hidden_perceptron_error.csv'):
+    os.remove('data/train_hidden_perceptron_error.csv')
+if os.path.isfile('data/prediction_hidden_perceptron_error.csv'):
+    os.remove('data/prediction_hidden_perceptron_error.csv')
 def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     '''
     '''

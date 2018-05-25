@@ -1,7 +1,8 @@
 import numpy as np
 import csv
 import configparser
-import keras
+import os
+import pandas
 from keras.models import Sequential
 from keras.layers import Dense
 from keras import regularizers
@@ -44,9 +45,14 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         scores = model.evaluate(X, Y)
     acc = ("%.2f%%" % (scores[1]*100))
     print('Accuracy ' + str(acc))
-    fields=[str(cant_epochs),str(acc)]
+    
+    fields=[str(cant_epochs),str(acc), str(optimizer)]
+    header = ['epochs', 'acc', 'metodo']
+    if os.path.isfile('dnn_acc.csv'):
+        os.remove('dnn_acc.csv')
     with open('dnn_acc.csv', 'a') as f:
         writer = csv.writer(f)
+        writer.writerow(header)
         writer.writerow(fields)
     for capa in cant_capas:
         if (capa==0):
@@ -56,6 +62,7 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
             activ_hidden = get_activations(cant_neuronas[capa], cant_neuronas[capa-1], model.layers[capa].get_weights(), activaciones, activations[capa])
             save_activation (cant_epochs, cant_neuronas[capa], activ_hidden, Y, capa, cant_capas[-1])
             activaciones = activ_hidden
+    save_data()
 
 def get_activations (cant_nodos, cant_input, weights, activations, activation):
     model = Sequential()
@@ -97,4 +104,16 @@ def convert_regularization(regularization, value):
     elif (regularization=='l1_l2'):
         r = regularizers.l1_l2(v)
     return r
+
+def save_data():
+    dnn_acc = pandas.read_csv('dnn_acc.csv', header=None)
+    perceptron_train = pandas.read_csv('data/train_hidden_perceptron_error.csv', header=None)
+    perceptron_test = pandas.read_csv('data/prediction_hidden_perceptron_error.csv', header=None)
+    data =pandas.concat([perceptron_train, perceptron_test, dnn_acc], axis=1)
+    # if file does not exist write header 
+    if not os.path.isfile('results.csv'):
+        data.to_csv('results.csv', sep=',', index=None, header =None)
+    else: # else it exists so append without writing the header
+        data.to_csv('results.csv',mode = 'a',header=None, index=None)
+    
 
