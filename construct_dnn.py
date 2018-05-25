@@ -17,10 +17,6 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
     kernel = convert_regularization(regularizador[0], 'kernel_l_value')
     bias = convert_regularization(regularizador[1], 'bias_l_value')
     activity = convert_regularization(regularizador[2], 'activity_l_value')
-    print(kernel)
-    print(bias)
-    print(activity)
-    input('')
     activaciones = []
     model = Sequential()
     if(regularizador!=''):
@@ -37,7 +33,6 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
                 model.add(Dense(int(cant_neuronas[capa]), activation=activations[capa]))
 
     print("Configuracion de la red: ", model.summary())
-
     model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
     model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size)
     print('###PREDICTION###')

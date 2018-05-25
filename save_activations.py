@@ -37,8 +37,8 @@ def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
             file.write(filedata)
         
         filename = 'data/hidden_'+str(layer) +'_activations.csv'
-        shuffle(filename)
-        split(open(filename, 'r'), 146);
+        split_number= shuffle(filename)
+        split(open(filename, 'r'), split_number);
         filename1 = 'output_1.csv'
         filename2 = 'output_2.csv'
         perceptron_train(filename1, filename2, layer, int(cant_nodos), int(epochs_perceptron), int(eta))
@@ -52,5 +52,7 @@ def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
 def shuffle (filename):
     dataframe = pandas.read_csv(filename, header=None)
     df = dataframe.sample(frac=1)
+    split_number = int((len(df)*70)/100)
     os.remove(filename)
     df.to_csv(filename, sep=',', header=None, index=None)
+    return split_number
