@@ -1,3 +1,4 @@
+import sys
 import configparser
 import numpy as np
 import csv
@@ -21,9 +22,15 @@ activations = (config['strings']['activation']).split(',')
 optimizer = config['strings']['optimizer']
 loss = config['strings']['loss']
 
+dropout=(config['dropout']['dropout_value']).split(',')
+
 mode = config['archives']['mode']
 
 X_test = Y_test = None
+
+if(len(cant_capas)!=len(dropout)):
+    print('dropout y cant de capas no son iguales')
+    sys.exit('error, parando ejecucion')
 
 if(mode=='train'):
     dataframe = pandas.read_csv(config['archives']['dataset'], header=None)
@@ -50,4 +57,4 @@ encoder.fit(Y)
 encoded_Y = encoder.transform(Y)
 Y = encoded_Y
 
-construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(cant_epochs), int(batch_size), activations, optimizer, loss, X_test, Y_test)
+construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(cant_epochs), int(batch_size), activations, optimizer, loss, dropout, X_test, Y_test)

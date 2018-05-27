@@ -6,13 +6,14 @@ import pandas
 from keras.models import Sequential
 from keras.layers import Dense
 from keras import regularizers
+from keras.layers import Dropout
 from save_activations import save_activation
 
 #leemos el archivo de configuracion
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, batch_size, activations, optimizer, loss, X_test=None, Y_test=None):
+def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, batch_size, activations, optimizer, loss, dropout, X_test=None, Y_test=None):
     #recorrer las capas para ir configurando la red
     regularizador=get_configurations()
     kernel = convert_regularization(regularizador[0], 'kernel_l_value')
@@ -24,14 +25,27 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         for capa in cant_capas:
             if capa == 0:
                 model.add(Dense(int(cant_neuronas[capa]), input_dim=int(cant_input), activation=activations[capa], kernel_regularizer=kernel, activity_regularizer=activity, bias_regularizer=bias))
+                print(dropout[capa])
+                input('drop')
+                if(float(dropout[capa]) > 0):       
+                    model.add(Dropout(float(dropout[capa])))         
             else:
                 model.add(Dense(int(cant_neuronas[capa]), activation=activations[capa],kernel_regularizer=kernel, activity_regularizer=activity, bias_regularizer=bias))
+                print(dropout[capa])
+                input('drop')
+                if(float(dropout[capa]) > 0):       
+                    model.add(Dropout(float(dropout[capa]))) 
     else:
         for capa in cant_capas:
             if capa == 0:
                 model.add(Dense(int(cant_neuronas[capa]), input_dim=int(cant_input), activation=activations[capa]))
+                 if(float(dropout[capa]) > 0):       
+                    model.add(Dropout(float(dropout[capa]))) 
             else:
                 model.add(Dense(int(cant_neuronas[capa]), activation=activations[capa]))
+                model.add(Dropout(0.5))
+                 if(float(dropout[capa]) > 0):       
+                    model.add(Dropout(float(dropout[capa]))) 
 
     print("Configuracion de la red: ", model.summary())
     model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
@@ -45,7 +59,7 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         scores = model.evaluate(X, Y)
     acc = ("%.2f%%" % (scores[1]*100))
     print('Accuracy ' + str(acc))
-    
+    #print(model.get_config())
     fields=[str(cant_epochs),str(acc), str(optimizer)]
     header = ['epochs', 'acc', 'metodo']
     if os.path.isfile('dnn_acc.csv'):
@@ -56,12 +70,26 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         writer.writerow(fields)
     for capa in cant_capas:
         if (capa==0):
-            activaciones = get_activations(cant_neuronas[capa], cant_input, model.layers[capa].get_weights(), X, activations[capa])
-            save_activation (cant_epochs, cant_neuronas[capa], activaciones, Y, capa, cant_capas[-1])
+            print(str(model.layers[capa].get_config()))
+            test = model.layers[capa].get_config()
+            print(test)
+            print(test['name'])
+            print('dropout' not in test['name'])
+            input('continue_')
+            if('dropout' not in test['name']):
+                activaciones = get_activations(cant_neuronas[capa], cant_input, model.layers[capa].get_weights(), X, activations[capa])
+                save_activation (cant_epochs, cant_neuronas[capa], activaciones, Y, capa, cant_capas[-1])
         else:
-            activ_hidden = get_activations(cant_neuronas[capa], cant_neuronas[capa-1], model.layers[capa].get_weights(), activaciones, activations[capa])
-            save_activation (cant_epochs, cant_neuronas[capa], activ_hidden, Y, capa, cant_capas[-1])
-            activaciones = activ_hidden
+            print(str(model.layers[capa].get_config()))
+            test = model.layers[capa].get_config()
+            print(test)
+            print(test['name'])
+            print('dropout' not in test['name'])
+            input('continue_')
+            if('dropout' not in test['name']):
+                activ_hidden = get_activations(cant_neuronas[capa], cant_neuronas[capa-1], model.layers[capa].get_weights(), activaciones, activations[capa])
+                save_activation (cant_epochs, cant_neuronas[capa], activ_hidden, Y, capa, cant_capas[-1])
+                activaciones = activ_hidden
     save_data()
 
 def get_activations (cant_nodos, cant_input, weights, activations, activation):
