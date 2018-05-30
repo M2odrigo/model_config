@@ -14,6 +14,8 @@ config = configparser.ConfigParser()
 config.read('config.ini')
 
 def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, batch_size, activations, optimizer, loss, dropout, X_test=None, Y_test=None):
+    #eliminamos archivos temporales
+    delete_data()
     #recorrer las capas para ir configurando la red
     regularizador=get_configurations()
     kernel = convert_regularization(regularizador[0], 'kernel_l_value')
@@ -43,7 +45,6 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
                     model.add(Dropout(float(dropout[capa]))) 
             else:
                 model.add(Dense(int(cant_neuronas[capa]), activation=activations[capa]))
-                model.add(Dropout(0.5))
                 if(float(dropout[capa]) > 0):       
                     model.add(Dropout(float(dropout[capa]))) 
 
@@ -58,6 +59,7 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         # evaluate the model
         scores = model.evaluate(X, Y)
     acc = ("%.2f%%" % (scores[1]*100))
+    acc_temp = scores[1]*100
     print('Accuracy ' + str(acc))
     #print(model.get_config())
     fields=[str(cant_epochs),str(acc), model.get_config()]
@@ -68,6 +70,11 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         writer = csv.writer(f)
         writer.writerow(header)
         writer.writerow(fields)
+    #vamos almacenando el accuracy de la red en cada iteracion (por cada ejecucion)
+    campo = [str(acc_temp)]
+    with open('data/dnn_accuracy.csv', 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow(campo)
     for capa in cant_capas:
         if (capa==0):
             print(str(model.layers[capa].get_config()))
@@ -141,5 +148,10 @@ def save_data():
         data.to_csv('results.csv', sep=',', index=None, header =None)
     else: # else it exists so append without writing the header
         data.to_csv('results.csv',mode = 'a',header=None, index=None)
-    
+
+def delete_data():
+    if os.path.isfile('data/train_hidden_perceptron_error.csv'):
+        os.remove('data/train_hidden_perceptron_error.csv')
+    if os.path.isfile('data/prediction_hidden_perceptron_error.csv'):
+        os.remove('data/prediction_hidden_perceptron_error.csv')    
 

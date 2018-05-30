@@ -5,6 +5,7 @@ import csv
 import os
 import pandas
 from construct_dnn import construct_dnn
+from resume_function import resume_function 
 from sklearn.preprocessing import LabelEncoder
 from keras import regularizers
 
@@ -17,6 +18,7 @@ cant_neuronas = (config['ints']['cant_neuronas']).split(',')
 cant_capas = np.arange(0, (int(config['ints']['cant_capas'])))
 batch_size = config['ints']['batch_size']
 cant_epochs = config['ints']['cant_epochs']
+cant_ejecucion = config['ints']['cant_ejecucion']
 
 activations = (config['strings']['activation']).split(',')
 optimizer = config['strings']['optimizer']
@@ -57,4 +59,22 @@ encoder.fit(Y)
 encoded_Y = encoder.transform(Y)
 Y = encoded_Y
 
-construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(cant_epochs), int(batch_size), activations, optimizer, loss, dropout, X_test, Y_test)
+def delete_data(cant_ejecucion):
+    if os.path.isfile('data/dnn_accuracy.csv'):
+        os.remove('data/dnn_accuracy.csv')
+    if os.path.isfile('data/resume/resume.csv'):
+        os.remove('data/resume/resume.csv')
+    for i in (np.arange(int(cant_ejecucion))):
+        name = 'data/perc_hidden' + str(i) +'.csv'
+        if os.path.isfile(name):
+            os.remove(name)
+
+#eliminamos archivos de la ejecucion anterior
+delete_data(cant_ejecucion)
+####Ejecutamos la red N cantidad de veces
+for i in (np.arange(int(cant_ejecucion))):
+    construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(cant_epochs), int(batch_size), activations, optimizer, loss, dropout, X_test, Y_test)
+
+resume_function(config['ints']['cant_capas'])
+
+    

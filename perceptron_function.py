@@ -1,10 +1,7 @@
 import numpy as np
 import csv
 import os
-if os.path.isfile('data/train_hidden_perceptron_error.csv'):
-    os.remove('data/train_hidden_perceptron_error.csv')
-if os.path.isfile('data/prediction_hidden_perceptron_error.csv'):
-    os.remove('data/prediction_hidden_perceptron_error.csv')
+
 def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     '''
     '''
@@ -43,10 +40,14 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     #a modo de aplicar correctamente la metrica, se selecciona el ultimo valor de la lista de errores, y se pasan esos weights para la prediccion
     mn = mala_clasif[-1]
     print(mn)
-    input('contien perceptron')
     error_minimo = mn/cont_total_input
     accuracy = 100 -(error_minimo*100)
     fields=[layer,str(cont_total_input),accuracy]
+    campo = [accuracy]
+    name = 'data/perc_hidden' + str(layer) +'.csv'
+    with open(name, 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow(campo)
     with open('data/train_hidden_perceptron_error.csv', 'a') as f:
         writer = csv.writer(f)
         writer.writerow(fields)
