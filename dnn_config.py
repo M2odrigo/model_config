@@ -17,7 +17,7 @@ cant_input = config['ints']['cant_input']
 cant_neuronas = (config['ints']['cant_neuronas']).split(',')
 cant_capas = np.arange(0, (int(config['ints']['cant_capas'])))
 batch_size = config['ints']['batch_size']
-cant_epochs = config['ints']['cant_epochs']
+cant_epochs = (config['ints']['cant_epochs']).split(',')
 cant_ejecucion = config['ints']['cant_ejecucion']
 
 activations = (config['strings']['activation']).split(',')
@@ -71,10 +71,15 @@ def delete_data(cant_ejecucion):
 
 #eliminamos archivos de la ejecucion anterior
 delete_data(cant_ejecucion)
-####Ejecutamos la red N cantidad de veces
-for i in (np.arange(int(cant_ejecucion))):
-    construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(cant_epochs), int(batch_size), activations, optimizer, loss, dropout, X_test, Y_test)
-
-resume_function(config['ints']['cant_capas'])
+####Ejecutamos N cantidad de epochs
+for epochs in cant_epochs:
+    fields=[('epochs'),str(epochs)]
+    with open('data/resume/resume.csv', 'a') as f:
+        writer = csv.writer(f)
+        writer.writerow(fields)
+    ####Ejecutamos la red N cantidad de veces
+    for i in (np.arange(int(cant_ejecucion))):
+        construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, int(epochs), int(batch_size), activations, optimizer, loss, dropout, X_test, Y_test)
+    resume_function(config['ints']['cant_capas'])
 
     
