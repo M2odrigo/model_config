@@ -7,13 +7,16 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras import regularizers
 from keras.layers import Dropout
+from keras.models import load_model
+from keras.callbacks import Callback
+from keras.callbacks import ModelCheckpoint
 from save_activations import save_activation
 
 #leemos el archivo de configuracion
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, batch_size, activations, optimizer, loss, dropout, X_test=None, Y_test=None):
+def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, batch_size, activations, optimizer, loss, dropout, intervalo, X_test=None, Y_test=None):
     #eliminamos archivos temporales
     delete_data()
     #recorrer las capas para ir configurando la red
@@ -47,10 +50,12 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
                 model.add(Dense(int(cant_neuronas[capa]), activation=activations[capa]))
                 if(float(dropout[capa]) > 0):       
                     model.add(Dropout(float(dropout[capa]))) 
-
-    #print("Configuracion de la red: ", model.summary())
+    model.save('data/check/my_model.h5')
+    print("Configuracion de la red: ", model.summary())
+    #agregamos un callback para entrar dentro del metodo fit() y extraer datos
+    weight_save_callback = ModelCheckpoint('data/check/weights.{epoch:02d}.hdf5', monitor='val_loss', verbose=0, save_best_only=False, mode='auto', period=intervalo)
     model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
-    model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size)
+    model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size, callbacks=[weight_save_callback])
     #print('###PREDICTION###')
     if(X_test!=None and X_test.any()):
         # evaluate the model
@@ -75,28 +80,37 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
     with open('data/dnn_accuracy.csv', 'a') as f:
         writer = csv.writer(f)
         writer.writerow(campo)
-    for capa in cant_capas:
-        if (capa==0):
-            #print(str(model.layers[capa].get_config()))
-            test = model.layers[capa].get_config()
-            #print(test)
-            #print(test['name'])
-            #print('dropout' not in test['name'])
-            if('dropout' not in test['name']):
-                activaciones = get_activations(cant_neuronas[capa], cant_input, model.layers[capa].get_weights(), X, activations[capa])
-                save_activation (cant_epochs, cant_neuronas[capa], activaciones, Y, capa, cant_capas[-1])
-        else:
-            #print(str(model.layers[capa].get_config()))
-            test = model.layers[capa].get_config()
-            #print(test)
-            #print(test['name'])
-            #print('dropout' not in test['name'])
-            if('dropout' not in test['name']):
-                #print('cant_neuronas[capa-1] ' + str(cant_neuronas[capa-1]) + '  capa ' + str(capa))
-                activ_hidden = get_activations(cant_neuronas[capa], cant_neuronas[capa-1], model.layers[capa].get_weights(), activaciones, activations[capa])
-                save_activation (cant_epochs, cant_neuronas[capa], activ_hidden, Y, capa, cant_capas[-1])
-                activaciones = activ_hidden
-    save_data()
+    for epoch in range(10,(cant_epochs+intervalo),intervalo):
+        for capa in cant_capas:
+            if (capa==0):
+                #print(str(model.layers[capa].get_config()))
+                test = model.layers[capa].get_config()
+                #print(test)
+                #print(test['name'])
+                #print('dropout' not in test['name'])
+                if('dropout' not in test['name']):
+                    model = get_model('my_model', epoch)
+                    activaciones = get_activations(cant_neuronas[capa], cant_input, model.layers[capa].get_weights(), X, activations[capa])
+                    save_activation (cant_epochs, cant_neuronas[capa], activaciones, Y, capa, cant_capas[-1])
+            else:
+                #print(str(model.layers[capa].get_config()))
+                test = model.layers[capa].get_config()
+                #print(test)
+                #print(test['name'])
+                #print('dropout' not in test['name'])
+                if('dropout' not in test['name']):
+                    #print('cant_neuronas[capa-1] ' + str(cant_neuronas[capa-1]) + '  capa ' + str(capa))
+                    model = get_model('my_model', epoch)
+                    activ_hidden = get_activations(cant_neuronas[capa], cant_neuronas[capa-1], model.layers[capa].get_weights(), activaciones, activations[capa])
+                    save_activation (cant_epochs, cant_neuronas[capa], activ_hidden, Y, capa, cant_capas[-1])
+                    activaciones = activ_hidden
+
+def get_model (modelName, epoch):
+    print('usando el modelo y cargando weights de: ' + 'data/check/weights.'+str(epoch)+'.hdf5')
+    model = load_model('data/check/'+modelName+'.h5')
+    model.load_weights('data/check/weights.'+str(epoch)+'.hdf5')
+    #print("Configuracion de la red: ", model.summary())
+    return model
 
 def get_activations (cant_nodos, cant_input, weights, activations, activation):
     model = Sequential()
@@ -138,17 +152,6 @@ def convert_regularization(regularization, value):
     elif (regularization=='l1_l2'):
         r = regularizers.l1_l2(v)
     return r
-
-def save_data():
-    dnn_acc = pandas.read_csv('dnn_acc.csv', header=None)
-    perceptron_train = pandas.read_csv('data/train_hidden_perceptron_error.csv', header=None)
-    perceptron_test = pandas.read_csv('data/prediction_hidden_perceptron_error.csv', header=None)
-    data =pandas.concat([perceptron_train, perceptron_test, dnn_acc], axis=1)
-    # if file does not exist write header 
-    if not os.path.isfile('results.csv'):
-        data.to_csv('results.csv', sep=',', index=None, header =None)
-    else: # else it exists so append without writing the header
-        data.to_csv('results.csv',mode = 'a',header=None, index=None)
 
 def delete_data():
     if os.path.isfile('data/train_hidden_perceptron_error.csv'):

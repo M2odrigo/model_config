@@ -13,6 +13,7 @@ eta = config['perceptron']['eta']
 
 def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
     if(layer != last_layer):
+        #print('guardamos para layer: ' + str(layer))
         #print("epoch ", e, "cant nodos: ", cant_nodos, "activation shape: ", activations.shape)
         ##print(activations)
         if os.path.isfile('data/hidden_'+str(layer) +'_activations.csv'):
