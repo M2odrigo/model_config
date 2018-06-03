@@ -36,10 +36,10 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     ###Respecto al peso (w), se le pasa el ultimo actualizado, si se necesitara pasar donde el error es minimo, utilizar el array de pesos (weights) y acceder mediante el indice
     #mala_clasif.sort()
     #mn = mala_clasif[3]
-    print(mala_clasif)
+    #print(mala_clasif)
     #a modo de aplicar correctamente la metrica, se selecciona el ultimo valor de la lista de errores, y se pasan esos weights para la prediccion
     mn = mala_clasif[-1]
-    print(mn)
+    #print(mn)
     error_minimo = mn/cont_total_input
     accuracy = 100 -(error_minimo*100)
     fields=[layer,str(cont_total_input),accuracy]
@@ -51,7 +51,7 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     with open('data/train_hidden_perceptron_error.csv', 'a') as f:
         writer = csv.writer(f)
         writer.writerow(fields)
-    #print(" error minimo "+ str(mn) + ' acc. '  +str(accuracy) + ' total entradas: ' + str(cont_total_input))
+    ##print(" error minimo "+ str(mn) + ' acc. '  +str(accuracy) + ' total entradas: ' + str(cont_total_input))
     perceptron_prediction(filename_test, layer, cant_input, w)
 
 
@@ -73,7 +73,7 @@ def perceptron_prediction(filename, layer, cant_input, w):
             cont_error = cont_error +1
     accuracy = 100-((cont_error*100)/cont_total_input)
     fields=[layer,str(cont_total_input),accuracy]
-    print('####predcciones perceptron###')
+    #print('####predcciones perceptron###')
     with open('data/prediction_hidden_perceptron_error.csv', 'a') as f:
         writer = csv.writer(f)
         writer.writerow(fields)

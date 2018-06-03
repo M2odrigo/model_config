@@ -27,13 +27,13 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         for capa in cant_capas:
             if capa == 0:
                 model.add(Dense(int(cant_neuronas[capa]), input_dim=int(cant_input), activation=activations[capa], kernel_regularizer=kernel, activity_regularizer=activity, bias_regularizer=bias))
-                print(dropout[capa])
+                #print(dropout[capa])
                 #input('drop')
                 if(float(dropout[capa]) > 0):       
                     model.add(Dropout(float(dropout[capa])))         
             else:
                 model.add(Dense(int(cant_neuronas[capa]), activation=activations[capa],kernel_regularizer=kernel, activity_regularizer=activity, bias_regularizer=bias))
-                print(dropout[capa])
+                #print(dropout[capa])
                 #input('drop')
                 if(float(dropout[capa]) > 0):       
                     model.add(Dropout(float(dropout[capa]))) 
@@ -48,10 +48,10 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
                 if(float(dropout[capa]) > 0):       
                     model.add(Dropout(float(dropout[capa]))) 
 
-    print("Configuracion de la red: ", model.summary())
+    #print("Configuracion de la red: ", model.summary())
     model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
     model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size)
-    print('###PREDICTION###')
+    #print('###PREDICTION###')
     if(X_test!=None and X_test.any()):
         # evaluate the model
         scores = model.evaluate(X_test, Y_test)
@@ -60,8 +60,8 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         scores = model.evaluate(X, Y)
     acc = ("%.2f%%" % (scores[1]*100))
     acc_temp = scores[1]*100
-    print('Accuracy ' + str(acc))
-    #print(model.get_config())
+    #print('Accuracy ' + str(acc))
+    ##print(model.get_config())
     fields=[str(cant_epochs),str(acc), model.get_config()]
     header = ['epochs', 'acc', 'metodo']
     if os.path.isfile('dnn_acc.csv'):
@@ -77,21 +77,22 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         writer.writerow(campo)
     for capa in cant_capas:
         if (capa==0):
-            print(str(model.layers[capa].get_config()))
+            #print(str(model.layers[capa].get_config()))
             test = model.layers[capa].get_config()
-            print(test)
-            print(test['name'])
-            print('dropout' not in test['name'])
+            #print(test)
+            #print(test['name'])
+            #print('dropout' not in test['name'])
             if('dropout' not in test['name']):
                 activaciones = get_activations(cant_neuronas[capa], cant_input, model.layers[capa].get_weights(), X, activations[capa])
                 save_activation (cant_epochs, cant_neuronas[capa], activaciones, Y, capa, cant_capas[-1])
         else:
-            print(str(model.layers[capa].get_config()))
+            #print(str(model.layers[capa].get_config()))
             test = model.layers[capa].get_config()
-            print(test)
-            print(test['name'])
-            print('dropout' not in test['name'])
+            #print(test)
+            #print(test['name'])
+            #print('dropout' not in test['name'])
             if('dropout' not in test['name']):
+                #print('cant_neuronas[capa-1] ' + str(cant_neuronas[capa-1]) + '  capa ' + str(capa))
                 activ_hidden = get_activations(cant_neuronas[capa], cant_neuronas[capa-1], model.layers[capa].get_weights(), activaciones, activations[capa])
                 save_activation (cant_epochs, cant_neuronas[capa], activ_hidden, Y, capa, cant_capas[-1])
                 activaciones = activ_hidden
@@ -122,14 +123,14 @@ def get_configurations ():
         activity_value = config['regularizers']['activity_value']
         regularizador[2]= activity_value
 
-    print(regularizador)
+    #print(regularizador)
     return regularizador
 
 def convert_regularization(regularization, value):
-    print('recibimos: ' + str(regularization))
+    #print('recibimos: ' + str(regularization))
     v = config['regularizers'][value]
     r=None
-    print('value to l : ' + v)
+    #print('value to l : ' + v)
     if (regularization=='l2'):
         r = regularizers.l2(v)
     elif (regularization=='l1'):

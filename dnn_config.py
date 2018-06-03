@@ -31,7 +31,7 @@ mode = config['archives']['mode']
 X_test = Y_test = None
 
 if(len(cant_capas)!=len(dropout)):
-    print('dropout y cant de capas no son iguales')
+    #print('dropout y cant de capas no son iguales')
     sys.exit('error, parando ejecucion')
 
 if(mode=='train'):
@@ -62,8 +62,8 @@ Y = encoded_Y
 def delete_data(cant_ejecucion):
     if os.path.isfile('data/dnn_accuracy.csv'):
         os.remove('data/dnn_accuracy.csv')
-    if os.path.isfile('data/resume/resume.csv'):
-        os.remove('data/resume/resume.csv')
+    #if os.path.isfile('data/resume/resume.csv'):
+    #   os.remove('data/resume/resume.csv')
     for i in (np.arange(int(cant_ejecucion))):
         name = 'data/perc_hidden' + str(i) +'.csv'
         if os.path.isfile(name):

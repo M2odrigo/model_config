@@ -13,8 +13,8 @@ eta = config['perceptron']['eta']
 
 def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
     if(layer != last_layer):
-        print("epoch ", e, "cant nodos: ", cant_nodos, "activation shape: ", activations.shape)
-        #print(activations)
+        #print("epoch ", e, "cant nodos: ", cant_nodos, "activation shape: ", activations.shape)
+        ##print(activations)
         if os.path.isfile('data/hidden_'+str(layer) +'_activations.csv'):
             os.remove('data/hidden_'+str(layer) +'_activations.csv')
         for index, activ in enumerate(Y):
@@ -44,8 +44,8 @@ def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
         perceptron_train(filename1, filename2, layer, int(cant_nodos), int(epochs_perceptron), int(eta))
 
     else:
-        print("capa actual " + str(layer))
-        print("capa final " + str(last_layer))
+        #print("capa actual " + str(layer))
+        #print("capa final " + str(last_layer))
         print("llegamos al output layer")
 
 
