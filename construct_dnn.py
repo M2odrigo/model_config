@@ -80,37 +80,6 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
     with open('data/dnn_accuracy.csv', 'a') as f:
         writer = csv.writer(f)
         writer.writerow(campo)
-    for epoch in range(10,(cant_epochs+intervalo),intervalo):
-        for capa in cant_capas:
-            if (capa==0):
-                #print(str(model.layers[capa].get_config()))
-                test = model.layers[capa].get_config()
-                #print(test)
-                #print(test['name'])
-                #print('dropout' not in test['name'])
-                if('dropout' not in test['name']):
-                    model = get_model('my_model', epoch)
-                    activaciones = get_activations(cant_neuronas[capa], cant_input, model.layers[capa].get_weights(), X, activations[capa])
-                    save_activation (cant_epochs, cant_neuronas[capa], activaciones, Y, capa, cant_capas[-1])
-            else:
-                #print(str(model.layers[capa].get_config()))
-                test = model.layers[capa].get_config()
-                #print(test)
-                #print(test['name'])
-                #print('dropout' not in test['name'])
-                if('dropout' not in test['name']):
-                    #print('cant_neuronas[capa-1] ' + str(cant_neuronas[capa-1]) + '  capa ' + str(capa))
-                    model = get_model('my_model', epoch)
-                    activ_hidden = get_activations(cant_neuronas[capa], cant_neuronas[capa-1], model.layers[capa].get_weights(), activaciones, activations[capa])
-                    save_activation (cant_epochs, cant_neuronas[capa], activ_hidden, Y, capa, cant_capas[-1])
-                    activaciones = activ_hidden
-
-def get_model (modelName, epoch):
-    print('usando el modelo y cargando weights de: ' + 'data/check/weights.'+str(epoch)+'.hdf5')
-    model = load_model('data/check/'+modelName+'.h5')
-    model.load_weights('data/check/weights.'+str(epoch)+'.hdf5')
-    #print("Configuracion de la red: ", model.summary())
-    return model
 
 def get_activations (cant_nodos, cant_input, weights, activations, activation):
     model = Sequential()

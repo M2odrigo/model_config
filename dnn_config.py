@@ -5,6 +5,7 @@ import csv
 import os
 import pandas
 from construct_dnn import construct_dnn
+from write_activation import write_activation
 from resume_function import resume_function 
 from sklearn.preprocessing import LabelEncoder
 from keras import regularizers
@@ -75,6 +76,12 @@ delete_data(cant_ejecucion)
 ####Ejecutamos la red N cantidad de veces
 for i in (np.arange(int(cant_ejecucion))):
     construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, cant_epochs, int(batch_size), activations, optimizer, loss, dropout, intervalo, X_test, Y_test)
-resume_function(config['ints']['cant_capas'])
+    for epoch in range(10,(cant_epochs+intervalo),intervalo):
+        fields=[('epochs'),str(epoch)]
+        with open('data/resume/resume.csv', 'a') as f:
+            writer = csv.writer(f)
+            writer.writerow(fields)
+        write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activations)
+        resume_function(config['ints']['cant_capas'])
 
     
