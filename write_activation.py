@@ -40,7 +40,7 @@ def write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activat
 
 
 def get_model (modelName, epoch):
-    print('usando el modelo y cargando weights de: ' + 'data/check/weights.'+str(epoch)+'.hdf5')
+    #print('usando el modelo y cargando weights de: ' + 'data/check/weights.'+str(epoch)+'.hdf5')
     model = load_model('data/check/'+modelName+'.h5')
     model.load_weights('data/check/weights.'+str(epoch)+'.hdf5')
     #print("Configuracion de la red: ", model.summary())

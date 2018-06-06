@@ -44,10 +44,10 @@ def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
         filename2 = 'output_2.csv'
         perceptron_train(filename1, filename2, layer, int(cant_nodos), int(epochs_perceptron), int(eta))
 
-    else:
+    #else:
         #print("capa actual " + str(layer))
         #print("capa final " + str(last_layer))
-        print("llegamos al output layer")
+        #print("llegamos al output layer")
 
 
 def shuffle (filename):

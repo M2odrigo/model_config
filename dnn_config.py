@@ -9,6 +9,7 @@ from write_activation import write_activation
 from resume_function import resume_function 
 from sklearn.preprocessing import LabelEncoder
 from keras import regularizers
+from sum_columns import sum_columns
 
 #Leemos las configuraciones, almacenamos en variables locales para construir la red
 config = configparser.ConfigParser()
@@ -66,7 +67,7 @@ def delete_data(cant_ejecucion):
         os.remove('data/dnn_accuracy.csv')
     #if os.path.isfile('data/resume/resume.csv'):
     #   os.remove('data/resume/resume.csv')
-    for i in (np.arange(int(cant_ejecucion))):
+    for i in (np.arange(int(cant_ejecucion)+1)):
         name = 'data/perc_hidden' + str(i) +'.csv'
         if os.path.isfile(name):
             os.remove(name)
@@ -82,6 +83,10 @@ for i in (np.arange(int(cant_ejecucion))):
             writer = csv.writer(f)
             writer.writerow(fields)
         write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activations)
-        resume_function(config['ints']['cant_capas'])
+        sum_columns('data/perc_hidden1')
+        sum_columns('data/perc_hidden0')
+        sum_columns('data/dnn_accuracy')
+        delete_data(cant_ejecucion)
+        #resume_function(config['ints']['cant_capas'])
 
     
