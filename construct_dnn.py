@@ -77,6 +77,7 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
         writer.writerow(fields)
     #vamos almacenando el accuracy de la red en cada iteracion (por cada ejecucion)
     campo = [str(acc_temp)]
+    print('###########ACCURRACY' + str(acc_temp))
     with open('data/dnn_accuracy.csv', 'a') as f:
         writer = csv.writer(f)
         writer.writerow(campo)

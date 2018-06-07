@@ -61,6 +61,15 @@ encoder = LabelEncoder()
 encoder.fit(Y)
 encoded_Y = encoder.transform(Y)
 Y = encoded_Y
+def delete_data_resume(cant_ejecucion):
+    if os.path.isfile('data/resume/resume.csv'):
+        os.remove('data/resume/resume.csv')
+    if os.path.isfile('data/dnn_accuracy_resume.csv'):
+        os.remove('data/dnn_accuracy_resume.csv')
+    for i in (np.arange(int(cant_ejecucion)+1)):
+        name = 'data/perc_hidden' + str(i) +'_resume.csv'
+        if os.path.isfile(name):
+            os.remove(name)
 
 def delete_data(cant_ejecucion):
     if os.path.isfile('data/dnn_accuracy.csv'):
@@ -72,8 +81,11 @@ def delete_data(cant_ejecucion):
         if os.path.isfile(name):
             os.remove(name)
 
+#eliminamos archivos de resumen de la configuracion anterior
+delete_data_resume(cant_ejecucion)
 #eliminamos archivos de la ejecucion anterior
 delete_data(cant_ejecucion)
+
 ####Ejecutamos la red N cantidad de veces
 for i in (np.arange(int(cant_ejecucion))):
     construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, cant_epochs, int(batch_size), activations, optimizer, loss, dropout, intervalo, X_test, Y_test)
@@ -83,10 +95,11 @@ for i in (np.arange(int(cant_ejecucion))):
             writer = csv.writer(f)
             writer.writerow(fields)
         write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activations)
-        sum_columns('data/perc_hidden1')
-        sum_columns('data/perc_hidden0')
-        sum_columns('data/dnn_accuracy')
-        delete_data(cant_ejecucion)
-        #resume_function(config['ints']['cant_capas'])
+    sum_columns('data/perc_hidden1')
+    sum_columns('data/perc_hidden0')
+    sum_columns('data/dnn_accuracy')
+    delete_data(cant_ejecucion)
+
+resume_function(cant_ejecucion, config['ints']['cant_capas'])
 
     
