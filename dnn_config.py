@@ -88,6 +88,7 @@ delete_data(cant_ejecucion)
 
 ####Ejecutamos la red N cantidad de veces
 for i in (np.arange(int(cant_ejecucion))):
+    print('ejecucion nro ::::::::::: ' + str(i))
     construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, cant_epochs, int(batch_size), activations, optimizer, loss, dropout, intervalo, X_test, Y_test)
     for epoch in range(10,(cant_epochs+intervalo),intervalo):
         fields=[('epochs'),str(epoch)]

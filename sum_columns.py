@@ -5,7 +5,7 @@ def sum_columns (filename):
     #dfs = pd.DataFrame(index=None, columns=None)
     columna = df.values
     print(columna)
-
+    ##Esto sirve para calcular el promedio entre las ejecuciones
     if os.path.isfile(filename+'_resume.csv'):
         dff = pd.read_csv(filename+'_resume.csv', header=None)
         columna2 = dff.values
