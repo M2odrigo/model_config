@@ -106,10 +106,10 @@ def dnn_config_delta(delta):
             dropout = read_config(filename)
         wsave = construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, cant_epochs, int(batch_size), activations, optimizer, loss, dropout, intervalo, delta, X_test, Y_test, wsave)
         for epoch in range(10,(cant_epochs+intervalo),intervalo):
-            fields=[('epochs'),str(epoch)]
-            with open('data/resume/resume.csv', 'a') as f:
-                writer = csv.writer(f)
-                writer.writerow(fields)
+            #fields=[('epochs'),str(epoch)]
+            #with open('data/resume/resume.csv', 'a') as f:
+                #writer = csv.writer(f)
+                #writer.writerow(fields)
             write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activations)
         #sum_columns('data/perc_hidden1')
         #sum_columns('data/perc_hidden0')
