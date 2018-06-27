@@ -13,7 +13,9 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     X = np.insert(X, cant_input,-1, axis=1)
     Y = dataset[:,cant_input]
     Y[Y == 0] = -1
-    w = np.zeros(len(X[0]))
+    #w = np.zeros(len(X[0]))
+    w = np.random.uniform(0,0.5,len(X[0]))
+    #print(w)
     eta = eta
     n = epochs
     errors = []
@@ -49,7 +51,26 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     #campo = [accuracy]
     #name = 'data/perc_hidden' + str(layer) +'.csv'
     df = pandas.DataFrame(acc)
-    df.to_csv('data/perc_hidden' + str(layer) +'.csv', header=None, index=None)
+    #print(df)
+    #input('okokoko')
+    #df.to_csv('data/perc_hidden' + str(layer) +'.csv', header=None, index=None)
+    fn='data/perc_hidden' + str(layer) +'.csv'
+    if os.path.isfile(fn):
+        dff = pandas.read_csv(fn, header=None)
+        #print(dff)
+        #columna2 = dff.values
+        #dfs = df-dff  ##restar las columnas
+        #dfs = dff.join(df, lsuffix='_exec', rsuffix='other_exec')
+        ts = dff.append(df, ignore_index=True)
+        #print(ts)
+        #print(columna2)
+        #input('test')
+        ts.to_csv(fn, sep=',', header=None, index=None)
+    else:
+        dfs = df
+        #print(dfs.values)
+        #input('holis')
+        dfs.to_csv(fn, sep=',', header=None, index=None)
     #with open(name, 'a') as f:
     #    writer = csv.writer(f)
     #    writer.writerow(campo)
@@ -82,3 +103,10 @@ def perceptron_prediction(filename, layer, cant_input, w):
     with open('data/prediction_hidden_perceptron_error.csv', 'a') as f:
         writer = csv.writer(f)
         writer.writerow(fields)
+
+#w = np.zeros(60)
+#print(w);
+#input('ok?')
+#w1 = np.random.uniform(0,0.5,60)
+#print(w1)
+#input('ok??')

@@ -5,20 +5,21 @@ def diff_columns (filename, delta):
     df = pd.read_csv(filename+'.csv', header=None)
     #dfs = pd.DataFrame(index=None, columns=None)
     columna = df.values
-    print(columna)
     ##esto es para otra metrica, donde se restan los ACC en cada ejecucion
-    if os.path.isfile(filename+'_delta'+delta+'.csv'):
-        dff = pd.read_csv(filename+'_delta'+delta+'.csv', header=None)
+    #if os.path.isfile(filename+'_delta'+delta+'.csv'):
+    if os.path.isfile(filename+'_delta.csv'):
+        dff = pd.read_csv(filename+'_delta.csv', header=None)
         columna2 = dff.values
-        dfs = df-dff
+        #dfs = df-dff  ##restar las columnas
+        dfs = df.join(dff, lsuffix='_exec', rsuffix='other_exec')
         #print('##')
         #print(columna2)
         #input('test')
-        dfs.to_csv(filename+'_delta'+delta+'.csv', sep=',', header=None, index=None)
+        dfs.to_csv(filename+'_delta.csv', sep=',', header=None, index=None)
     else:
         dfs = df
         #print(dfs.values)
         #input('holis')
-        dfs.to_csv(filename+'_delta'+delta+'.csv', sep=',', header=None, index=None)
+        dfs.to_csv(filename+'_delta.csv', sep=',', header=None, index=None)
 
     

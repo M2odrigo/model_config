@@ -105,7 +105,7 @@ def dnn_config_delta(delta):
             print("vamos a leer otra configuracion para " + filename)
             dropout = read_config(filename)
         wsave = construct_dnn(X, encoded_Y, int(cant_input), cant_capas, cant_neuronas, cant_epochs, int(batch_size), activations, optimizer, loss, dropout, intervalo, delta, X_test, Y_test, wsave)
-        for epoch in range(10,(cant_epochs+intervalo),intervalo):
+        for epoch in range(intervalo,(cant_epochs+intervalo),intervalo):
             #fields=[('epochs'),str(epoch)]
             #with open('data/resume/resume.csv', 'a') as f:
                 #writer = csv.writer(f)
@@ -117,7 +117,7 @@ def dnn_config_delta(delta):
         diff_columns('data/perc_hidden1', delta)
         diff_columns('data/perc_hidden0', delta)
         diff_columns('data/dnn_accuracy', delta)
-        delete_data(cant_ejecucion)
+        #delete_data(cant_ejecucion)
 
     #resume_function(cant_ejecucion, config['ints']['cant_capas'])
 
