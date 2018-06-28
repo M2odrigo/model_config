@@ -13,8 +13,11 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     X = np.insert(X, cant_input,-1, axis=1)
     Y = dataset[:,cant_input]
     Y[Y == 0] = -1
-    #w = np.zeros(len(X[0]))
-    w = np.random.uniform(0,0.5,len(X[0]))
+    ##SI LOS WEIGHTS SON INICIALIZADOS EN ZEROS, SE SELECCIONA EL TERCER ITEM DE LA LISTA, LOS PRIMEROS DARAN 100 DEBIDO A LA RESTA 
+    ##SI LOS WEIGHTS SON INICIALIZADOS DIFERENTES A ZEROS, SE SELECCIONA EL PRIMER ITEM DE LA LISTA
+    w = np.zeros(len(X[0]))
+    #w = np.random.uniform(0,0.5,len(X[0]))
+    selected_item = 3
     #print(w)
     eta = eta
     n = epochs
@@ -37,14 +40,19 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     #en caso de que se necesite acceder al momento donde el perceptron tuvo menos errores, se ordena la lista de menor a mayor.
     #elegimos un valor luego de las primeras tres, para evitar enganos por la inicializacion en zeros
     ###Respecto al peso (w), se le pasa el ultimo actualizado, si se necesitara pasar donde el error es minimo, utilizar el array de pesos (weights) y acceder mediante el indice
-    #mala_clasif.sort()
-    #mn = mala_clasif[3]
     #print(mala_clasif)
+    mala_clasif.sort()
+    mn = mala_clasif[selected_item]
+    #print('###sorting..')
+    #print(mala_clasif)
+    #print(mn)
+    #input('ok?')
     #a modo de aplicar correctamente la metrica, se selecciona el ultimo valor de la lista de errores, y se pasan esos weights para la prediccion
-    mn = mala_clasif[-1]
+    #mn = mala_clasif[-1]
     #print(mn)
     error_minimo = mn/cont_total_input
     accuracy = 100 -(error_minimo*100)
+    #print('accuracy:: ' + str(accuracy))
     acc = []
     acc.append(accuracy)
     #fields=[layer,str(cont_total_input),accuracy]
