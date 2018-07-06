@@ -60,7 +60,7 @@ def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
 def shuffle (filename):
     dataframe = pandas.read_csv(filename, header=None)
     df = dataframe.sample(frac=1)
-    split_number = int((len(df)*70)/100)
+    split_number = int((len(df)*100)/100)
     os.remove(filename)
     df.to_csv(filename, sep=',', header=None, index=None)
     return split_number

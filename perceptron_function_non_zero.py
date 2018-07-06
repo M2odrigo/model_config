@@ -13,48 +13,56 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     X = np.insert(X, cant_input,-1, axis=1)
     Y = dataset[:,cant_input]
     Y[Y == 0] = -1
-    ##SI LOS WEIGHTS SON INICIALIZADOS EN ZEROS, SE SELECCIONA EL TERCER ITEM DE LA LISTA, LOS PRIMEROS DARAN 100 DEBIDO A LA RESTA 
-    ##SI LOS WEIGHTS SON INICIALIZADOS DIFERENTES A ZEROS, SE SELECCIONA EL PRIMER ITEM DE LA LISTA
-    w = np.zeros(len(X[0]))
-    #w = np.random.uniform(0,0.5,len(X[0]))
-    selected_item = 3
-    #print(w)
-    eta = eta
-    n = epochs
-    errors = []
-    mala_clasif = []
-
-    for t in range(n):
-        total_error = 0
-        cont_error = 0
-        cont_total_input=0
-        for i, x in enumerate(X):
-            cont_total_input=cont_total_input+1
-            if (np.dot(X[i], w)*Y[i]) <= 0.0:
-                total_error += (np.dot(X[i], w)*Y[i])
-                w = w + eta*X[i]*Y[i]
-                cont_error = cont_error +1
-        errors.append(total_error*-1)
-        mala_clasif.append(cont_error)
-    
-    #en caso de que se necesite acceder al momento donde el perceptron tuvo menos errores, se ordena la lista de menor a mayor.
-    #elegimos un valor luego de las primeras tres, para evitar enganos por la inicializacion en zeros
-    ###Respecto al peso (w), se le pasa el ultimo actualizado, si se necesitara pasar donde el error es minimo, utilizar el array de pesos (weights) y acceder mediante el indice
-    #print(mala_clasif)
-    mala_clasif.sort()
-    mn = mala_clasif[selected_item]
-    #print('###sorting..')
-    #print(mala_clasif)
-    #print(mn)
-    #input('ok?')
-    #a modo de aplicar correctamente la metrica, se selecciona el ultimo valor de la lista de errores, y se pasan esos weights para la prediccion
-    #mn = mala_clasif[-1]
-    #print(mn)
-    error_minimo = mn/cont_total_input
-    accuracy = 100 -(error_minimo*100)
-    #print('accuracy:: ' + str(accuracy))
     acc = []
-    acc.append(accuracy)
+    for h in range(2):
+        mala_clasif = []
+        for v in range(50):
+            ##SI LOS WEIGHTS SON INICIALIZADOS EN ZEROS, SE SELECCIONA EL TERCER ITEM DE LA LISTA, LOS PRIMEROS DARAN 100 DEBIDO A LA RESTA 
+            ##SI LOS WEIGHTS SON INICIALIZADOS DIFERENTES A ZEROS, SE SELECCIONA EL PRIMER ITEM DE LA LISTA
+            #w = np.zeros(len(X[0]))
+            w = np.random.uniform(0,0.5,len(X[0]))
+            selected_item = 0
+            #print(w)
+            eta = eta
+            n = epochs
+            errors = []
+            for t in range(n):
+                total_error = 0
+                cont_error = 0
+                cont_total_input=0
+                for i, x in enumerate(X):
+                    cont_total_input=cont_total_input+1
+                    if (np.dot(X[i], w)*Y[i]) <= 0.0:
+                        total_error += (np.dot(X[i], w)*Y[i])
+                        w = w + eta*X[i]*Y[i]
+                        cont_error = cont_error +1
+                errors.append(total_error*-1)
+                mala_clasif.append(cont_error)
+            #print(len(mala_clasif))
+            #print('#$%%$##')
+        
+        #en caso de que se necesite acceder al momento donde el perceptron tuvo menos errores, se ordena la lista de menor a mayor.
+        #elegimos un valor luego de las primeras tres, para evitar enganos por la inicializacion en zeros
+        ###Respecto al peso (w), se le pasa el ultimo actualizado, si se necesitara pasar donde el error es minimo, utilizar el array de pesos (weights) y acceder mediante el indice
+        #print(len(mala_clasif))
+        mala_clasif.sort()
+        mn = mala_clasif[selected_item]
+        #print('###sorting..')
+        #print(mala_clasif)
+        #print(mn)
+
+        #a modo de aplicar correctamente la metrica, se selecciona el ultimo valor de la lista de errores, y se pasan esos weights para la prediccion
+        #mn = mala_clasif[-1]
+        #print(mn)
+        #print(cont_total_input)
+        #input('ok?')
+        error_minimo = mn/cont_total_input
+        accuracy = 100 -(error_minimo*100)
+        #print('accuracy:: ' + str(accuracy))
+        acc.append(accuracy)
+    
+    #print(acc)
+    #input('tabien?')
     #fields=[layer,str(cont_total_input),accuracy]
     #campo = [accuracy]
     #name = 'data/perc_hidden' + str(layer) +'.csv'
