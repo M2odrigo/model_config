@@ -20,7 +20,7 @@ def write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activat
             #print(str(model.layers[capa].get_config()))
             test = model.layers[capa].get_config()
             #print(test)
-            #print(test['name'])
+            print(capa)
             #print('dropout' not in test['name'])
             if('dropout' not in test['name']):
                 activaciones = get_activations(cant_neuronas[capa], cant_input, model.layers[capa].get_weights(), X, activations[capa])
@@ -29,7 +29,7 @@ def write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activat
             model = get_model('my_model', epoch)
             #print(str(model.layers[capa].get_config()))
             test = model.layers[capa].get_config()
-            #print(test)
+            print(capa)
             #print(test['name'])
             #print('dropout' not in test['name'])
             if('dropout' not in test['name']):
