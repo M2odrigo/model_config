@@ -4,34 +4,38 @@ import pandas
 from keras.models import Sequential
 from keras.layers import Dense
 
-def simple_dnn (filename):
+def simple_dnn (filename,epo):
     #60 * 208 hidden 0
     #30 * 208 hidden 1
-    epochs = [20,40,60,80,100]
+    e = 50
     batch = 50
     dataset = np.loadtxt(filename, delimiter=",")
     accuracy = []
+    acc_max = []
     if (filename == 'data/hidden_0_activations.csv'):
         cant_input = 60
     else:
         cant_input = 30
     X = dataset[:,0:cant_input]
     Y = dataset[:,cant_input]
-    for e in epochs:
+    for t in range(100):
         model = Sequential()
         model.add(Dense(1, input_dim=int(cant_input),activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
         
-        print("Configuracion de la red: ", model.summary())
+        #print("Configuracion de la red: ", model.summary())
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-        print("entrenando para ", e, " epochs")
+        #print("entrenando para ", e, " epochs")
         model.fit(X, Y, epochs=e, batch_size=int(batch))
         scores = model.evaluate(X, Y)
         score = scores[1]*100
-        print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+        #print("\n%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
         accuracy.append(score)
-    print(accuracy)
-    df = pandas.DataFrame(accuracy)
+    accuracy.sort()
+    minimo = accuracy[-1]
+    acc_max.append(minimo)
+    acc_max.append(epo)
+    df = pandas.DataFrame(acc_max)
     fn='data/acc_hidden' + str(cant_input) +'.csv'
     if os.path.isfile(fn):
         dff = pandas.read_csv(fn, header=None)

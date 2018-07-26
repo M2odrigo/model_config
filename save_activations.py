@@ -4,6 +4,7 @@ import csv
 import pandas
 from split_function import split
 from perceptron_function_non_zero import perceptron_train
+from simple_dnn import simple_dnn
 
 #Leemos las configuraciones para el perceptron
 config = configparser.ConfigParser()
@@ -45,11 +46,15 @@ def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
         #    file.write(filedata)
         
         filename = 'data/hidden_'+str(layer) +'_activations.csv'
-        split_number= shuffle(filename)
-        split(open(filename, 'r'), split_number);
-        filename1 = 'output_1.csv'
-        filename2 = 'output_2.csv'
-        perceptron_train(filename1, filename2, layer, int(cant_nodos), int(epochs_perceptron), int(eta))
+        #ENTRENAR Y PREDECIR CON UNA SIMPLE DNN
+        simple_dnn(filename,e)
+        simple_dnn(filename,e)
+        #DESCOMENTAR TODO LO DE ABAJO PARA ENTRENAR LOS PERCEPTRONES
+        #split_number= shuffle(filename)
+        #split(open(filename, 'r'), split_number);
+        #filename1 = 'output_1.csv'
+        #filename2 = 'output_2.csv'
+        #perceptron_train(filename1, filename2, layer, int(cant_nodos), int(epochs_perceptron), int(eta))
 
     #else:
         #print("capa actual " + str(layer))
