@@ -47,14 +47,14 @@ def save_activation (e, cant_nodos, activations, Y, layer, last_layer):
         
         filename = 'data/hidden_'+str(layer) +'_activations.csv'
         #ENTRENAR Y PREDECIR CON UNA SIMPLE DNN
-        simple_dnn(filename,e)
-        simple_dnn(filename,e)
+        #simple_dnn(filename,e)
+        #simple_dnn(filename,e)
         #DESCOMENTAR TODO LO DE ABAJO PARA ENTRENAR LOS PERCEPTRONES
-        #split_number= shuffle(filename)
-        #split(open(filename, 'r'), split_number);
-        #filename1 = 'output_1.csv'
-        #filename2 = 'output_2.csv'
-        #perceptron_train(filename1, filename2, layer, int(cant_nodos), int(epochs_perceptron), int(eta))
+        split_number= shuffle(filename)
+        split(open(filename, 'r'), split_number);
+        filename1 = 'output_1.csv'
+        filename2 = 'output_2.csv'
+        perceptron_train(filename1, filename2, layer, int(cant_nodos), int(epochs_perceptron), int(eta), e)
 
     #else:
         #print("capa actual " + str(layer))

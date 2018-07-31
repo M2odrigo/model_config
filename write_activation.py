@@ -14,8 +14,10 @@ from keras.callbacks import ModelCheckpoint
 from save_activations import save_activation
 
 def write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activations):
+    conta = -1
     for capa in cant_capas:
         if (capa==0):
+            print('estamos en la capa '+ str(capa))
             model = get_model('my_model', epoch)
             #print(str(model.layers[capa].get_config()))
             test = model.layers[capa].get_config()
@@ -24,20 +26,25 @@ def write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activat
             #print('dropout' not in test['name'])
             if('dropout' not in test['name']):
                 activaciones = get_activations(cant_neuronas[capa], cant_input, model.layers[capa].get_weights(), X, activations[capa])
-                save_activation (epoch, cant_neuronas[capa], activaciones, Y, capa, cant_capas[-1])
+                save_activation (epoch, cant_neuronas[capa], activaciones, Y, capa, cant_capas[conta])
+                conta = -1
+            else:
+                conta = -2
         else:
+            print('pasamos a la capa '+ str(capa))
             model = get_model('my_model', epoch)
             #print(str(model.layers[capa].get_config()))
+            #model.get_layer('dense_1').get_config()
             test = model.layers[capa].get_config()
             #print(test)
-            #print(test['name'])
+            
             #print('dropout' not in test['name'])
             if('dropout' not in test['name']):
+                print(test['name'])
                 #print('cant_neuronas[capa-1] ' + str(cant_neuronas[capa-1]) + '  capa ' + str(capa))
                 activ_hidden = get_activations(cant_neuronas[capa], cant_neuronas[capa-1], model.layers[capa].get_weights(), activaciones, activations[capa])
                 save_activation (epoch, cant_neuronas[capa], activ_hidden, Y, capa, cant_capas[-1])
                 activaciones = activ_hidden
-
 
 def get_model (modelName, epoch):
     #print('usando el modelo y cargando weights de: ' + 'data/check/weights.'+str(epoch)+'.hdf5')

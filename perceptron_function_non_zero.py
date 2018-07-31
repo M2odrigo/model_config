@@ -3,7 +3,7 @@ import csv
 import os
 import pandas
 
-def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
+def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta, dnn_epoch):
     '''
     '''
     dataset = np.loadtxt(filename, delimiter=",")
@@ -16,7 +16,7 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     acc = []
     for h in range(2):
         mala_clasif = []
-        for v in range(50):
+        for v in range(500):
             ##SI LOS WEIGHTS SON INICIALIZADOS EN ZEROS, SE SELECCIONA EL TERCER ITEM DE LA LISTA, LOS PRIMEROS DARAN 100 DEBIDO A LA RESTA 
             ##SI LOS WEIGHTS SON INICIALIZADOS DIFERENTES A ZEROS, SE SELECCIONA EL PRIMER ITEM DE LA LISTA
             #w = np.zeros(len(X[0]))
@@ -35,31 +35,35 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
                     if (np.dot(X[i], w)*Y[i]) <= 0.0:
                         total_error += (np.dot(X[i], w)*Y[i])
                         w = w + eta*X[i]*Y[i]
-                        cont_error = cont_error +1
-                errors.append(total_error*-1)
-                mala_clasif.append(cont_error)
-            #print(len(mala_clasif))
-            #print('#$%%$##')
+                
+            for i, x in enumerate(X):
+                if (np.dot(X[i], w)*Y[i]) <= 0.0:
+                    cont_error = cont_error +1
+            mala_clasif.append(cont_error)
+        #print(mala_clasif)
+        #print('#$%%$##')
+        #input('okokokok')
         
         #en caso de que se necesite acceder al momento donde el perceptron tuvo menos errores, se ordena la lista de menor a mayor.
         #elegimos un valor luego de las primeras tres, para evitar enganos por la inicializacion en zeros
         ###Respecto al peso (w), se le pasa el ultimo actualizado, si se necesitara pasar donde el error es minimo, utilizar el array de pesos (weights) y acceder mediante el indice
         #print(len(mala_clasif))
-        mala_clasif.sort()
-        mn = mala_clasif[selected_item]
+        #mala_clasif.sort()
+        #mn = mala_clasif[selected_item]
         #print('###sorting..')
         #print(mala_clasif)
-        #print(mn)
+        mn = (sum(mala_clasif) / len(mala_clasif))
 
         #a modo de aplicar correctamente la metrica, se selecciona el ultimo valor de la lista de errores, y se pasan esos weights para la prediccion
         #mn = mala_clasif[-1]
         #print(mn)
         #print(cont_total_input)
         #input('ok?')
-        error_minimo = mn/cont_total_input
-        accuracy = 100 -(error_minimo*100)
+        #error_minimo = mn/cont_total_input
+        #accuracy = 100 -(error_minimo*100)
         #print('accuracy:: ' + str(accuracy))
-        acc.append(accuracy)
+        acc.append(mn)
+        acc.append(dnn_epoch)
     
     #print(acc)
     #input('tabien?')
@@ -95,6 +99,7 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     #    writer.writerow(fields)
     ##print(" error minimo "+ str(mn) + ' acc. '  +str(accuracy) + ' total entradas: ' + str(cont_total_input))
     #perceptron_prediction(filename_test, layer, cant_input, w)
+    #input('wait')
 
 
 def perceptron_prediction(filename, layer, cant_input, w):

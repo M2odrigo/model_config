@@ -114,9 +114,9 @@ def dnn_config_delta(delta):
         #sum_columns('data/perc_hidden1')
         #sum_columns('data/perc_hidden0')
         #sum_columns('data/dnn_accuracy')
-        diff_columns('data/perc_hidden1', delta)
-        diff_columns('data/perc_hidden0', delta)
-        diff_columns('data/dnn_accuracy', delta)
+        #diff_columns('data/perc_hidden1', delta)
+        #diff_columns('data/perc_hidden0', delta)
+        #diff_columns('data/dnn_accuracy', delta)
         #delete_data(cant_ejecucion)
 
     #resume_function(cant_ejecucion, config['ints']['cant_capas'])
