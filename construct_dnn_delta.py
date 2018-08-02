@@ -64,26 +64,27 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
     #agregamos un callback para entrar dentro del metodo fit() y extraer datos
     weight_save_callback = ModelCheckpoint('data/check/weights.{epoch:02d}.hdf5', monitor='val_loss', verbose=0, save_best_only=False, mode='auto', period=intervalo)
     model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
-    model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size, callbacks=[weight_save_callback])
+    model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size, verbose=2,callbacks=[weight_save_callback])
     #print('###PREDICTION###')
-    if(X_test!=None and X_test.any()):
+    if(X_test.any()):
         # evaluate the model
+        print('vamos a entrenar sobre un dataset y testear sobre otro')
         scores = model.evaluate(X_test, Y_test)
     else:
         # evaluate the model
         scores = model.evaluate(X, Y)
     acc = ("%.2f%%" % (scores[1]*100))
     acc_temp = scores[1]*100
-    #print('Accuracy ' + str(acc))
+    print('Accuracy ' + str(acc_temp))
     ##print(model.get_config())
-    fields=[str(cant_epochs),str(acc), model.get_config()]
-    header = ['epochs', 'acc', 'metodo']
-    if os.path.isfile('dnn_acc.csv'):
-        os.remove('dnn_acc.csv')
-    with open('dnn_acc.csv', 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow(header)
-        writer.writerow(fields)
+    #fields=[str(cant_epochs),str(acc), model.get_config()]
+    #header = ['epochs', 'acc', 'metodo']
+    #if os.path.isfile('dnn_acc.csv'):
+    #    os.remove('dnn_acc.csv')
+    #with open('dnn_acc.csv', 'a') as f:
+    #    writer = csv.writer(f)
+    #    writer.writerow(header)
+    #    writer.writerow(fields)
     #vamos almacenando el accuracy de la red en cada iteracion (por cada ejecucion)
     campo = [str(acc_temp)]
     print('###########ACCURRACY' + str(acc_temp))
