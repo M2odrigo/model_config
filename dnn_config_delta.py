@@ -110,7 +110,12 @@ def dnn_config_delta(delta):
             #with open('data/resume/resume.csv', 'a') as f:
                 #writer = csv.writer(f)
                 #writer.writerow(fields)
-            write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activations)
+            if(mode=='train'):
+                print('train-train')
+                write_activation(cant_capas, cant_neuronas, cant_input, epoch, X, Y, activations, loss, optimizer)
+            if(mode=='train-test'):
+                print('train-test')
+                write_activation(cant_capas, cant_neuronas, cant_input, epoch, X_test, Y_test, activations, loss, optimizer)
         #sum_columns('data/perc_hidden1')
         #sum_columns('data/perc_hidden0')
         #sum_columns('data/dnn_accuracy')

@@ -52,10 +52,11 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta, dn
         #mn = mala_clasif[selected_item]
         #print('###sorting..')
         #print(mala_clasif)
-        mn = (sum(mala_clasif) / len(mala_clasif))
-
+        minimo = (sum(mala_clasif) / len(mala_clasif))
+        mn = 100 - (minimo*100/cont_total_input)
         #a modo de aplicar correctamente la metrica, se selecciona el ultimo valor de la lista de errores, y se pasan esos weights para la prediccion
         #mn = mala_clasif[-1]
+        #print(minimo)        
         #print(mn)
         #print(cont_total_input)
         #input('ok?')
