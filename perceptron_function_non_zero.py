@@ -14,6 +14,7 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta, dn
     Y = dataset[:,cant_input]
     Y[Y == 0] = -1
     acc = []
+    maximos = []
     for h in range(2):
         mala_clasif = []
         for v in range(500):
@@ -48,8 +49,6 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta, dn
         #elegimos un valor luego de las primeras tres, para evitar enganos por la inicializacion en zeros
         ###Respecto al peso (w), se le pasa el ultimo actualizado, si se necesitara pasar donde el error es minimo, utilizar el array de pesos (weights) y acceder mediante el indice
         #print(len(mala_clasif))
-        #mala_clasif.sort()
-        #mn = mala_clasif[selected_item]
         #print('###sorting..')
         #print(mala_clasif)
         minimo = (sum(mala_clasif) / len(mala_clasif))
@@ -65,6 +64,12 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta, dn
         #print('accuracy:: ' + str(accuracy))
         acc.append(mn)
         acc.append(dnn_epoch)
+        mala_clasif.sort()
+        mx = mala_clasif[selected_item]
+        mx = 100 - (mx*100/cont_total_input)
+        maximos.append(mx)
+        maximos.append(dnn_epoch)
+        
     
     #print(acc)
     #input('tabien?')
@@ -92,6 +97,16 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta, dn
         #print(dfs.values)
         #input('holis')
         dfs.to_csv(fn, sep=',', header=None, index=None)
+    
+    dfmx = pandas.DataFrame(maximos)
+    fnmx='data/perc_max_hidden' + str(layer) +'.csv'
+    if os.path.isfile(fnmx):
+        dffmx = pandas.read_csv(fnmx, header=None)
+        tsmx = dffmx.append(dfmx, ignore_index=True)
+        tsmx.to_csv(fnmx, sep=',', header=None, index=None)
+    else:
+        dfsmx = dfmx
+        dfsmx.to_csv(fnmx, sep=',', header=None, index=None)
     #with open(name, 'a') as f:
     #    writer = csv.writer(f)
     #    writer.writerow(campo)

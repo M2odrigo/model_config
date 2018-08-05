@@ -66,7 +66,7 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
     model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
     model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size, verbose=2,callbacks=[weight_save_callback])
     #print('###PREDICTION###')
-    if(X_test.any()):
+    if(X_test is not None and X_test.any()):
         # evaluate the model
         print('vamos a entrenar sobre un dataset y testear sobre otro')
         scores = model.evaluate(X_test, Y_test)
