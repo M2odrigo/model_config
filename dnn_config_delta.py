@@ -83,14 +83,15 @@ def dnn_config_delta(delta):
                 os.remove(name)
 
     def delete_data(cant_ejecucion):
-        if os.path.isfile('data/dnn_accuracy.csv'):
-            os.remove('data/dnn_accuracy.csv')
+        print('pass')
+    #    if os.path.isfile('data/dnn_accuracy.csv'):
+    #        os.remove('data/dnn_accuracy.csv')
         #if os.path.isfile('data/resume/resume.csv'):
         #   os.remove('data/resume/resume.csv')
-        for i in (np.arange(int(cant_ejecucion)+1)):
-            name = 'data/perc_hidden' + str(i) +'.csv'
-            if os.path.isfile(name):
-                os.remove(name)
+    #    for i in (np.arange(int(cant_ejecucion)+1)):
+    #        name = 'data/perc_hidden' + str(i) +'.csv'
+    #        if os.path.isfile(name):
+    #            os.remove(name)
 
     #eliminamos archivos de resumen de la configuracion anterior
     delete_data_resume(cant_ejecucion)
