@@ -16,10 +16,11 @@ from save_activations import save_activation
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, batch_size, activations, optimizer, loss, dropout, intervalo, X_test=None, Y_test=None):
+def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, batch_size, activations, optimizer, loss, dropout, intervalo, delta, X_test=None, Y_test=None, wsave = None):
     #eliminamos archivos temporales
     delete_data()
     #recorrer las capas para ir configurando la red
+    #print(dropout)
     regularizador=get_configurations()
     kernel = convert_regularization(regularizador[0], 'kernel_l_value')
     bias = convert_regularization(regularizador[1], 'bias_l_value')
@@ -51,36 +52,46 @@ def construct_dnn (X, Y, cant_input, cant_capas, cant_neuronas, cant_epochs, bat
                 if(float(dropout[capa]) > 0):       
                     model.add(Dropout(float(dropout[capa]))) 
     model.save('data/check/my_model.h5')
+    if not (wsave):
+        print("vamos a guardar los pesos de la primera ejecucion")
+        wsave=model.get_weights()
+    else:
+        print("vamos a cargar los pesos para esta ejecucion")
+        model.set_weights(wsave)
+    #print(model.get_weights())
+    #input('verificar pesos ')
     print("Configuracion de la red: ", model.summary())
     #agregamos un callback para entrar dentro del metodo fit() y extraer datos
     weight_save_callback = ModelCheckpoint('data/check/weights.{epoch:02d}.hdf5', monitor='val_loss', verbose=0, save_best_only=False, mode='auto', period=intervalo)
     model.compile(loss=loss, optimizer=optimizer, metrics=['accuracy'])
-    model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size, callbacks=[weight_save_callback])
+    model.fit(X, Y, epochs=cant_epochs, batch_size=batch_size, verbose=2,callbacks=[weight_save_callback])
     #print('###PREDICTION###')
-    if(X_test!=None and X_test.any()):
+    if(X_test is not None and X_test.any()):
         # evaluate the model
+        print('vamos a entrenar sobre un dataset y testear sobre otro')
         scores = model.evaluate(X_test, Y_test)
     else:
         # evaluate the model
         scores = model.evaluate(X, Y)
     acc = ("%.2f%%" % (scores[1]*100))
     acc_temp = scores[1]*100
-    #print('Accuracy ' + str(acc))
+    print('Accuracy ' + str(acc_temp))
     ##print(model.get_config())
-    fields=[str(cant_epochs),str(acc), model.get_config()]
-    header = ['epochs', 'acc', 'metodo']
-    if os.path.isfile('dnn_acc.csv'):
-        os.remove('dnn_acc.csv')
-    with open('dnn_acc.csv', 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow(header)
-        writer.writerow(fields)
+    #fields=[str(cant_epochs),str(acc), model.get_config()]
+    #header = ['epochs', 'acc', 'metodo']
+    #if os.path.isfile('dnn_acc.csv'):
+    #    os.remove('dnn_acc.csv')
+    #with open('dnn_acc.csv', 'a') as f:
+    #    writer = csv.writer(f)
+    #    writer.writerow(header)
+    #    writer.writerow(fields)
     #vamos almacenando el accuracy de la red en cada iteracion (por cada ejecucion)
     campo = [str(acc_temp)]
     print('###########ACCURRACY' + str(acc_temp))
     with open('data/dnn_accuracy.csv', 'a') as f:
         writer = csv.writer(f)
         writer.writerow(campo)
+    return wsave
 
 def get_activations (cant_nodos, cant_input, weights, activations, activation):
     model = Sequential()

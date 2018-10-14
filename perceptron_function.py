@@ -1,5 +1,7 @@
 import numpy as np
 import csv
+import os
+import pandas
 
 def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     '''
@@ -16,7 +18,6 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
     n = epochs
     errors = []
     mala_clasif = []
-    weights = []
 
     for t in range(n):
         total_error = 0
@@ -27,25 +28,36 @@ def perceptron_train(filename, filename_test, layer, cant_input, epochs, eta):
             if (np.dot(X[i], w)*Y[i]) <= 0.0:
                 total_error += (np.dot(X[i], w)*Y[i])
                 w = w + eta*X[i]*Y[i]
-                weights.append(w)
                 cont_error = cont_error +1
         errors.append(total_error*-1)
         mala_clasif.append(cont_error)
     
-    mala_clasif.sort()
-    print(mala_clasif)
+    #en caso de que se necesite acceder al momento donde el perceptron tuvo menos errores, se ordena la lista de menor a mayor.
     #elegimos un valor luego de las primeras tres, para evitar enganos por la inicializacion en zeros
     ###Respecto al peso (w), se le pasa el ultimo actualizado, si se necesitara pasar donde el error es minimo, utilizar el array de pesos (weights) y acceder mediante el indice
-    mn = mala_clasif[3]
-    print(mn)
+    #mala_clasif.sort()
+    #mn = mala_clasif[3]
+    #print(mala_clasif)
+    #a modo de aplicar correctamente la metrica, se selecciona el ultimo valor de la lista de errores, y se pasan esos weights para la prediccion
+    mn = mala_clasif[-1]
+    #print(mn)
     error_minimo = mn/cont_total_input
     accuracy = 100 -(error_minimo*100)
-    fields=[layer,str(cont_total_input),accuracy]
-    with open('data/train_hidden_perceptron_error.csv', 'a') as f:
-        writer = csv.writer(f)
-        writer.writerow(fields)
-    #print(" error minimo "+ str(mn) + ' acc. '  +str(accuracy) + ' total entradas: ' + str(cont_total_input))
-    perceptron_prediction(filename_test, layer, cant_input, w)
+    acc = []
+    acc.append(accuracy)
+    #fields=[layer,str(cont_total_input),accuracy]
+    #campo = [accuracy]
+    #name = 'data/perc_hidden' + str(layer) +'.csv'
+    df = pandas.DataFrame(acc)
+    df.to_csv('data/perc_hidden' + str(layer) +'.csv', header=None, index=None)
+    #with open(name, 'a') as f:
+    #    writer = csv.writer(f)
+    #    writer.writerow(campo)
+    #with open('data/train_hidden_perceptron_error.csv', 'a') as f:
+    #    writer = csv.writer(f)
+    #    writer.writerow(fields)
+    ##print(" error minimo "+ str(mn) + ' acc. '  +str(accuracy) + ' total entradas: ' + str(cont_total_input))
+    #perceptron_prediction(filename_test, layer, cant_input, w)
 
 
 def perceptron_prediction(filename, layer, cant_input, w):
@@ -66,7 +78,7 @@ def perceptron_prediction(filename, layer, cant_input, w):
             cont_error = cont_error +1
     accuracy = 100-((cont_error*100)/cont_total_input)
     fields=[layer,str(cont_total_input),accuracy]
-    print('####predcciones perceptron###')
+    #print('####predcciones perceptron###')
     with open('data/prediction_hidden_perceptron_error.csv', 'a') as f:
         writer = csv.writer(f)
         writer.writerow(fields)
