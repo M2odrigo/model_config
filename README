@@ -1,0 +1,32 @@
+OS: Linux Mint (puede ser cualquier distro)
+Hardware: testeado sobre una intel core i5 6th generation/8gb ram/ no VGA
+Language: Python
+Dependencies in python: 
+  TensorFlow as Backend 
+  Keras implementation
+  Numpy
+  Pandas for csv files
+  Scipy
+Datasets: varios datasets de clasificaciones binarias pueden ser conseguidos en: http://archive.ics.uci.edu/ml/datasets.html
+
+Ejecución del script:
+  Modificar el archivo config.ini según el modelo que se quiera crear
+  Colocar los datasets a utilizar y definidos en el config.ini en la carpeta "dataset"
+  Por default se crearán dos lotes de 500 perceptrones, para modificar este parametro ir al archivo perceptron_function_non_zero.py
+  Definir la cantidad de redes a crear en el archivo run_delta_metric.py
+  Ejecutar el archivo run_delta_metric.py para iniciar la extracción de los valores
+  Una vez finalizado, los resultados serán almacenados en la carpeta "data"
+  
+  Comentarios: 
+    Cada script de python posee comentarios acerca de los motivos por los cuales se realizó de esta manera o bien que se espera que realice el códigos
+    A modo de logs, se imprimen en pantalla algunos progresos de la red, otros están comentados, puediendo descomentarse sin problemas
+    
+  Errores comunes:
+    El archivo config.ini es propenso a errores debido a que se debe definir una configuración válida
+    Para cada configuración existe un comentario asociado junto a un ejemplo de qué poner
+    Si alguna configuración no coincide o no puede ser modelada, se lanzará un comentario saliendo de la ejecución o una excepción bastante fea.
+    
+  Sean libres de realizar modificaciones u optimizar el código, este tarda mucho en la máquina definida más arriba.
+  Si tienen VGA, aprovechen y este código debería "volar" en sus máquinas.
+  
+  Saludos!.
